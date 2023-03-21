@@ -1,4 +1,4 @@
-package com.mango.appsapi;
+package com.mango.api;
 
 //import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
