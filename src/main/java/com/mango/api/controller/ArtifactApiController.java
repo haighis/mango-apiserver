@@ -17,14 +17,17 @@ import java.util.UUID;
 public class ArtifactApiController implements ArtifactApi {
 
   @Autowired
-  private ArtifactRepository repository;
+  private ArtifactRepository artifactRepository;
+
+  @Autowired
+  private ItemRepository itemRepository;
 
   @Override
   public ResponseEntity<Artifact> findById(
           UUID id
   ) throws Exception {
 
-    Artifact book = repository.findById(id)
+    Artifact book = artifactRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Artifact not found for this id :: " + id));
 
     return ResponseEntity.ok().body(book);
@@ -32,7 +35,7 @@ public class ArtifactApiController implements ArtifactApi {
 
   @Override
   public Collection<Artifact> findArtifacts() {
-    return repository.findAll();
+    return artifactRepository.findAll();
   }
 
   @PutMapping("/{id}")
@@ -51,7 +54,8 @@ public class ArtifactApiController implements ArtifactApi {
   public ResponseEntity<Artifact> postArtifact(
           Artifact body
   ) throws Exception {
-    return new ResponseEntity<Artifact>(repository.save(body), HttpStatus.CREATED);
+    Artifact artifact = artifactRepository.save(body);
+    return new ResponseEntity<Artifact>(artifact, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.HEAD, value = "/")

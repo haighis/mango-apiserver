@@ -1,8 +1,11 @@
 package com.mango.api.controller;
 
 import com.mango.api.exception.EntityNotFoundException;
+import com.mango.api.model.Artifact;
 import com.mango.api.model.Item;
+import com.mango.api.model.ItemDto;
 import com.mango.api.model.Kind;
+import com.mango.api.respository.ArtifactRepository;
 import com.mango.api.respository.ItemRepository;
 import com.mango.api.respository.KindRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,14 @@ import java.util.Collection;
 import java.util.UUID;
 
 @RestController
+//@CrossOrigin(origins = "*")
 public class ItemApiController implements ItemApi {
 
   @Autowired
   private ItemRepository repository;
+
+  @Autowired
+  private ArtifactRepository artifactRepository;
 
   @Override
   public ResponseEntity<Item> findById(
@@ -47,11 +54,27 @@ public class ItemApiController implements ItemApi {
     return book;
   }
 
+//  @Override
+//  public ResponseEntity<Item> postItem(ItemDto body) throws Exception {
+//    repository.save(body)
+//    return null;
+//  }
+
   @Override
   public ResponseEntity<Item> postItem(
           Item body
   ) throws Exception {
     return new ResponseEntity<Item>(repository.save(body), HttpStatus.CREATED);
+  }
+
+  @Override
+  public ResponseEntity<Artifact> addArtifactForItem(
+          @PathVariable("orderId") final UUID orderId,
+          ItemDto body
+  ) throws Exception {
+    Artifact artifact = new Artifact(orderId, body.getName(),body.getUrl(),body.getVersion(),true,body.getStatus(),body.getNamespace());
+    artifactRepository.save(artifact);
+    return new ResponseEntity<Artifact>(artifact, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.HEAD, value = "/")

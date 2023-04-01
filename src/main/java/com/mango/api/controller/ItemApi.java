@@ -1,6 +1,8 @@
 package com.mango.api.controller;
 
+import com.mango.api.model.Artifact;
 import com.mango.api.model.Item;
+import com.mango.api.model.ItemDto;
 import com.mango.api.model.Kind;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,6 +49,29 @@ public interface ItemApi {
   @PatchMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public Item patchItem(@PathVariable("id") final UUID id, @RequestBody final Item label);
+
+//  @Operation(summary = "Create Item", description = "", tags = { "item" })
+//  @ApiResponses(value = { @ApiResponse(description = "successful operation", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Item.class)), @Content(mediaType = "application/xml", schema = @Schema(implementation = Item.class)) }) })
+//  @PostMapping(value = "/", consumes = { "application/json", "application/xml", "application/x-www-form-urlencoded" })
+//  @ResponseStatus(HttpStatus.CREATED)
+//  public ResponseEntity<Item> postItemArtifact(
+//          @NotNull
+//          @Parameter(description = "Created Item object", required = true)
+//          @Valid @RequestBody ItemDto body
+//  )
+//          throws Exception;
+
+  @Operation(summary = "Create Artifact for Item", description = "", tags = { "item" })
+  @ApiResponses(value = { @ApiResponse(description = "successful operation", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Artifact.class)), @Content(mediaType = "application/xml", schema = @Schema(implementation = Artifact.class)) }) })
+  @PostMapping(value = "/{orderId}/artifact", consumes = { "application/json", "application/xml", "application/x-www-form-urlencoded" })
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity<Artifact> addArtifactForItem(
+          @PathVariable("orderId") final UUID orderId,
+          @NotNull
+          @Parameter(description = "Created Item object", required = true)
+          @Valid @RequestBody ItemDto body
+  )
+          throws Exception;
 
   @Operation(summary = "Create Item", description = "", tags = { "item" })
   @ApiResponses(value = { @ApiResponse(description = "successful operation", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Item.class)), @Content(mediaType = "application/xml", schema = @Schema(implementation = Item.class)) }) })
