@@ -2,6 +2,7 @@ package com.mango.api.controller;
 
 import com.mango.api.exception.EntityNotFoundException;
 import com.mango.api.model.Application;
+import com.mango.api.model.ApplicationShell;
 import com.mango.api.respository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -48,10 +50,17 @@ public class ApplicationApiController implements ApplicationApi {
 
   @Override
   public ResponseEntity<Application> postApplication(
-          Application body//,
-  //    String bookAuthorization
+          Application body
   ) throws Exception {
-    return new ResponseEntity<Application>(repository.save(body), HttpStatus.CREATED);
+    List<Application> exists = repository.findByApplicationNameAndInstalledInstanceCode(body.getApplicationName(), body.getInstalledInstanceCode());
+    Application app = new Application();
+    if(exists.stream().count() >= 1) {
+      app = exists.get(0);
+    }
+    else {
+      app =  repository.save(body);
+    }
+    return new ResponseEntity<Application>(app, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.HEAD, value = "/")

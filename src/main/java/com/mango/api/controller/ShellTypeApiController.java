@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,14 +20,11 @@ public class ShellTypeApiController implements ShellTypeApi {
 
   @Override
   public ResponseEntity<ShellType> findById(
-          UUID id//,
-          //    String bookAuthorization
+          String id
   ) throws Exception {
-
-    ShellType book = repository.findById(id)
+    ShellType book = repository.findById(UUID.fromString(id))
         .orElseThrow(() -> new EntityNotFoundException("ShellType not found for this id :: " + id));
-
-    return ResponseEntity.ok().body(book);
+  return ResponseEntity.ok().body(book);
   }
 
   @Override
@@ -50,7 +48,14 @@ public class ShellTypeApiController implements ShellTypeApi {
   public ResponseEntity<ShellType> postShellType(
           ShellType body
   ) throws Exception {
-    return new ResponseEntity<ShellType>(repository.save(body), HttpStatus.CREATED);
+    ShellType shellType = new ShellType();
+    List<ShellType> exist = repository.findByDescription(body.getDescription());
+    if(exist.stream().count() > 0) {
+      shellType = exist.get(0);
+    } else {
+      shellType = repository.save(body);
+    }
+    return new ResponseEntity<ShellType>(shellType, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.HEAD, value = "/")
@@ -62,6 +67,7 @@ public class ShellTypeApiController implements ShellTypeApi {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public UUID deleteShellType(@PathVariable final UUID id) {
+    repository.deleteById(id);
     return id;
   }
 }

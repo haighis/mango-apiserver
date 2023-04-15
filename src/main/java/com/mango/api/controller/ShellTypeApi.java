@@ -30,7 +30,7 @@ public interface ShellTypeApi {
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<ShellType> findById(
       @Parameter(description = "ID of ShellType", required = true)
-      @PathVariable UUID id
+      @PathVariable String id
       )
       throws Exception;
 

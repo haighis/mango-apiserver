@@ -2,6 +2,8 @@ package com.mango.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -10,22 +12,24 @@ import java.util.UUID;
 @Schema(description = "Label object")
 @Entity
 @Table(name = "labels")
-public class Label extends BaseEntity {
+@Getter @Setter
+public class Label {
 /* Backpacks, Software Catalog, Software Company, Foundation*/
 	@JsonProperty(value="id", required=true, index = 10)
-	@Schema(description = "Unique identifier of the Item.",
+	@Schema(description = "Unique identifier of Label.",
 			example = "1", required = true)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 
 	//Getters and setters omitted for brevity
-	public UUID getId() {
-		return id;
-	}
+//	public UUID getId() {
+//		return id;
+//	}
 	@JsonProperty(value="name", required=true, index = 10)
-	@Schema(name="name", description = "Name of the Store Item.",
+	@Schema(name="name", description = "Name of Label.",
 		example = "Forum", required = true)
+	@Column(name = "name")
 	private String name;
 
 	@Column(name = "created_on")
@@ -43,51 +47,52 @@ public class Label extends BaseEntity {
 //	private String status;
 
 	public Label() {
-		super("");
+
 	}
 
 	public Label(String name, String namespace, String kind) {
-		super(namespace);
 		this.name = name;
 		this.namespace = namespace;
 		this.kind = kind;
 	}
 
-	@Column(name = "name")
-	public String getName()
-	{
-		return this.name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+//	@Column(name = "name")
+//	public String getName()
+//	{
+//		return this.name;
+//	}
+//
+//	public void setName(String name)
+//	{
+//		this.name = name;
+//	}
 
 	@JsonProperty(value="kind", required=true, index = 40)
-	@Schema(description = "Kind of the item",
+	@Schema(description = "Kind of Label.",
 			example = "Application", required = false)
-	private String kind;
 	@Column(name = "kind")
-	public String getKind() {
-		return kind;
-	}
-	public void setKind(String kind) {
-		this.kind = kind;
-	}
+	private String kind;
+
+//	public String getKind() {
+//		return kind;
+//	}
+//	public void setKind(String kind) {
+//		this.kind = kind;
+//	}
 
 	@JsonProperty(value="namespace", required=true, index = 50)
-	@Schema(description = "Namespace of the item",
+	@Schema(description = "Namespace of Label.",
 			example = "test", required = false)
+	@Column(name = "namespace")
 	private String namespace;
 
-	@Column(name = "namespace")
-	public String getNamespace() {
-		return namespace;
-	}
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+//	@Column(name = "namespace")
+//	public String getNamespace() {
+//		return namespace;
+//	}
+//	public void setNamespace(String namespace) {
+//		this.namespace = namespace;
+//	}
 
 //	@Column(name = "description")
 //	public String getDescription() {
