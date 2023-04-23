@@ -3,9 +3,16 @@ package com.mango.api.controller;
 import com.mango.api.dto.UserDTO;
 import com.mango.api.entities.GroupRole;
 import com.mango.api.entities.User;
+import com.mango.api.model.ShellType;
 import com.mango.api.services.TokenManagerService;
 import com.mango.api.services.UserService;
 import com.mango.api.web.request.LoginRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
@@ -19,8 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Tag(name = "Account", description = "The Account API")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/account")
 public class UserApiController {
 
     private final UserService userService;
@@ -34,23 +42,28 @@ public class UserApiController {
         this.passwordservice = passwordservice;
     }
 
-    @PostMapping("/auth/login")
+    @Operation(summary = "Authenticate account by username and password", description = "Returns a single object containing token.", tags = { "Account" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = LoginRequest.class)))
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest userRequest){
-
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(userRequest.getUsername(), userRequest.getPassword());
-
         subject.login(usernamePasswordToken);
-
        Map<String,Object> authInfo = new HashMap<>() {{
            put("token", tokenManagerService.createTokenForUser(userRequest.getUsername()));
        }};
-
-        return ResponseEntity.ok(authInfo);
+       return ResponseEntity.ok(authInfo);
     }
 
-    @PostMapping("/auth/register")
-    public User adduser(@RequestBody UserDTO dto){
+    @Operation(summary = "Register account by UserDto", description = "Returns a single user object containing the created user.", tags = { "Account" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class)))
+    })
+    @PostMapping("/register")
+    public User register(@RequestBody UserDTO dto){
 
         User user= User.builder()
                 .username(dto.getUsername()).email(dto.getEmail())
@@ -65,11 +78,11 @@ public class UserApiController {
     }
 
    // @RequiresPermissions("document:read")
-    @GetMapping("/user")
-    public ResponseEntity<List<UserDTO>> getAll() {
-        List<UserDTO> list = userService.getUsers().stream().map(this::copyUserEntityToDto).collect(Collectors.toList());
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
+//    @GetMapping("/user")
+//    public ResponseEntity<List<UserDTO>> getAll() {
+//        List<UserDTO> list = userService.getUsers().stream().map(this::copyUserEntityToDto).collect(Collectors.toList());
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
 
 
 
