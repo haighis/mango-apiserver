@@ -31,7 +31,7 @@ public class SetupApiController implements SetupApi {
 
   @Override
   public ResponseEntity<Label> postSetup(
-          Label body
+          //Label body
   ) throws Exception {
     // check if this method has run yet and prevent it from executing if already run
     String initialSetupValue = "System-Initial-Setup";

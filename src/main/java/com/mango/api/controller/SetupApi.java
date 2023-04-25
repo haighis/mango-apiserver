@@ -27,9 +27,9 @@ public interface SetupApi {
   @PostMapping(value = "/", consumes = { "application/json", "application/xml", "application/x-www-form-urlencoded" })
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Label> postSetup(
-      @NotNull
-      @Parameter(description = "Setup object", required = true)
-      @Valid @RequestBody Label body
+      //@NotNull
+      //@Parameter(description = "Setup object", required = true)
+      //@Valid @RequestBody Label body
   )
       throws Exception;
 }
